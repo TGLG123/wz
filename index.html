@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>视频播放</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: linear-gradient(135deg, #1a1a2e, #16213e);
+      color: white;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang SC", sans-serif;
+      height: 100vh;
+      overflow: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+    }
+
+    #videoContainer {
+      width: 95vw;
+      max-width: 500px; /* 竖屏最大宽度 */
+      position: relative;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow:
+        0 10px 30px rgba(0, 0, 0, 0.5),
+        0 0 0 2px rgba(255, 255, 255, 0.1);
+      background: #000;
+      aspect-ratio: 16 / 9;
+    }
+
+    video {
+      width: 100%;
+      height: 100%;
+      display: block;
+      object-fit: contain;
+      background: #000;
+    }
+
+    #rotateTip {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.85);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      z-index: 10;
+      color: white;
+      text-align: center;
+      padding: 20px;
+      font-size: 18px;
+      line-height: 1.5;
+      backdrop-filter: blur(4px);
+    }
+
+    #rotateTip img {
+      width: 60px;
+      margin-bottom: 20px;
+      opacity: 0.9;
+    }
+
+    /* 横屏样式 */
+    @media (orientation: landscape) {
+      #rotateTip {
+        display: none !important;
+      }
+
+      #videoContainer {
+        width: 98vw;
+        max-width: 98vw;
+        height: 95vh;
+        aspect-ratio: auto; /* 允许自由比例 */
+        max-height: 95vh;
+        border-radius: 12px;
+      }
+
+      video {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div id="videoContainer">
+    <video controls playsinline>
+      <source src="pangu.mp4" type="video/mp4">
+      您的浏览器不支持视频播放。
+    </video>
+    <div id="rotateTip">
+      <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIiB2aWV3Qm94PSIwIDAgMjQgMjQiIGZpbGw9IndoaXRlIj48cGF0aCBkPSJNMTEuOTkgMi45OUwxMS45OSAxTDEwLjk5IDFMNy45OSA0TDEwLjk5IDdMMTEuOTkgN0wxMS45OSA0Ljk5QzE0LjI0IDQuOTkgMTYuMDUgNi43OSAxNi4wNSA5LjAzQzE2LjA1IDExLjI3IDE0LjI0IDEzLjA3IDEx45OSAxMy4wN0M5Ljc1IDEzLjA3IDcuOTQgMTEuMjcgNy45NCA5LjAzTDYuOTQgOS4wM0M2Ljk0IDExLjgyIDkuMTYgMTQuMDQgMTEuOTkgMTQuMDRDMTQuODIgMTQuMDQgMTcuMDQgMTEuODIgMTcuMDQgOS4wM0MxNy4wNCA2LjI0IDE0LjgyIDQuMDIgMTEuOTkgNC4wMkwxMS45OSAyLjk5WiIvPjwvc3ZnPg==" alt="旋转提示图标">
+      为了获得最佳观看体验<br>请将手机横屏播放
+    </div>
+  </div>
+
+  <script>
+    // 可选：监听方向变化（兼容旧设备）
+    window.addEventListener('orientationchange', function() {
+      setTimeout(() => {
+        const tip = document.getElementById('rotateTip');
+        if (window.orientation === 90 || window.orientation === -90) {
+          tip.style.display = 'none';
+        } else {
+          tip.style.display = 'flex';
+        }
+      }, 100);
+    });
+  </script>
+</body>
+</html>
