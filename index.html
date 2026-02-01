@@ -25,7 +25,7 @@
 
     #videoContainer {
       width: 95vw;
-      max-width: 500px; /* 竖屏最大宽度 */
+      max-width: 500px;
       position: relative;
       border-radius: 16px;
       overflow: hidden;
@@ -42,6 +42,8 @@
       display: block;
       object-fit: contain;
       background: #000;
+      /* 确保视频可点击 */
+      cursor: pointer;
     }
 
     #rotateTip {
@@ -62,6 +64,8 @@
       font-size: 18px;
       line-height: 1.5;
       backdrop-filter: blur(4px);
+      /* 关键：允许点击穿透到视频？不！我们自己处理点击 */
+      pointer-events: auto;
     }
 
     #rotateTip img {
@@ -70,7 +74,6 @@
       opacity: 0.9;
     }
 
-    /* 横屏样式 */
     @media (orientation: landscape) {
       #rotateTip {
         display: none !important;
@@ -80,7 +83,7 @@
         width: 98vw;
         max-width: 98vw;
         height: 95vh;
-        aspect-ratio: auto; /* 允许自由比例 */
+        aspect-ratio: auto;
         max-height: 95vh;
         border-radius: 12px;
       }
@@ -95,25 +98,37 @@
 </head>
 <body>
   <div id="videoContainer">
-    <video controls playsinline>
+    <video controls playsinline preload="metadata">
       <source src="pangu.mp4" type="video/mp4">
       您的浏览器不支持视频播放。
     </video>
     <div id="rotateTip">
       <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIiB2aWV3Qm94PSIwIDAgMjQgMjQiIGZpbGw9IndoaXRlIj48cGF0aCBkPSJNMTEuOTkgMi45OUwxMS45OSAxTDEwLjk5IDFMNy45OSA0TDEwLjk5IDdMMTEuOTkgN0wxMS45OSA0Ljk5QzE0LjI0IDQuOTkgMTYuMDUgNi43OSAxNi4wNSA5LjAzQzE2LjA1IDExLjI3IDE0LjI0IDEzLjA3IDEx45OSAxMy4wN0M5Ljc1IDEzLjA3IDcuOTQgMTEuMjcgNy45NCA5LjAzTDYuOTQgOS4wM0M2Ljk0IDExLjgyIDkuMTYgMTQuMDQgMTEuOTkgMTQuMDRDMTQuODIgMTQuMDQgMTcuMDQgMTEuODIgMTcuMDQgOS4wM0MxNy4wNCA2LjI0IDE0LjgyIDQuMDIgMTEuOTkgNC4wMkwxMS45OSAyLjk5WiIvPjwvc3ZnPg==" alt="旋转提示图标">
-      为了获得最佳观看体验<br>请将手机横屏播放
+      为了获得最佳观看体验<br>请将手机横屏播放<br>
+      <small style="margin-top:12px; opacity:0.7;">（点击屏幕可开始播放）</small>
     </div>
   </div>
 
   <script>
-    // 可选：监听方向变化（兼容旧设备）
+    const video = document.querySelector('video');
+    const rotateTip = document.getElementById('rotateTip');
+
+    // 当用户点击提示层时，尝试播放视频
+    rotateTip.addEventListener('click', () => {
+      // 尝试播放（可能被浏览器策略阻止，但用户手势允许）
+      video.play().catch(e => {
+        console.log('播放被阻止或失败:', e);
+        // 即使失败，至少移除提示让用户直接点视频控件
+      });
+    });
+
+    // 监听方向变化
     window.addEventListener('orientationchange', function() {
       setTimeout(() => {
-        const tip = document.getElementById('rotateTip');
         if (window.orientation === 90 || window.orientation === -90) {
-          tip.style.display = 'none';
+          rotateTip.style.display = 'none';
         } else {
-          tip.style.display = 'flex';
+          rotateTip.style.display = 'flex';
         }
       }, 100);
     });
